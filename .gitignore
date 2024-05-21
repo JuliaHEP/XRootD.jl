@@ -1,0 +1,14 @@
+.vscode/*
+.browse.VC.*
+.DS_Store
+gen/build
+deps/build
+deps/build.log
+docs/build
+docs/src/notebooks
+Manifest.toml
+*/Manifest.toml
+.ipynb_checkpoints
+
+
+

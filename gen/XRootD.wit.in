@@ -1,0 +1,26 @@
+module_name         = "XRootD"
+export_jl_fname     = "XRootD-export.jl"
+module_jl_fname     = "XRootD-generated.jl"
+out_cpp_fname       = "jlXRootD.cxx"
+out_h_fname         = "jlXRootD.h"
+out_cxx_dir         = "cpp"
+out_jl_dir          = "jl"
+
+clang_opts          = ["-v"]
+
+include_dirs        = [ "./cpp", 
+                        "@XRootD_INCLUDE_DIRS@",
+                        "@Julia_INCLUDE_DIRS@",  
+                        "@JlCxx_DIR@/../../../include"]
+
+input               = [ "XrdCl/XrdClFileSystem.hh",
+                        "XrdCl/XrdClFile.hh",
+                      ]
+
+extra_headers       = [ ]
+vetoed_finalizer_classes = [ ]
+export              = "all"
+veto_list           = "XRootD-veto.h"
+cxx-std             = "c++17"
+inheritances        = [ ]
+export_blacklist    = [ ]

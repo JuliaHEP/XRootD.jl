@@ -1,0 +1,4 @@
+name = "XRootD"
+uuid = "164e3b87-dc46-4cbc-97a6-5b310108fce0"
+authors = ["Pere Mato <pere.mato@cern.ch>"]
+version = "0.1.0"

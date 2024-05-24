@@ -1,5 +1,5 @@
-project(XRootDWrap)
 cmake_minimum_required(VERSION 3.21)
+project(XRootDWrap)
 
 set(CMAKE_MACOSX_RPATH 1)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
@@ -25,14 +25,14 @@ if(WRAPIT_EXECUTABLE)
     COMMAND mkdir -p ${SOURCE_DIR}/jl
     COMMAND ${WRAPIT_EXECUTABLE} --force -v 1 ${SOURCE_DIR}/XRootD.wit
     WORKING_DIRECTORY ${SOURCE_DIR}
-    DEPENDS ${SOURCE_DIR}/XRootD.wit ${SOURCE_DIR}/XRootD-veto.h)
+    DEPENDS ${SOURCE_DIR}/XRootD.wit ${SOURCE_DIR}/XRootD-veto.h ${SOURCE_DIR}/cpp/XRootDWrap.h)
 else()
   message(STATUS "The executable wrapit was not found. Building wrapper using the generated jlXRootD.cxx/h files from the sources.")
 endif()
 
 file(GLOB GEN_SOURCES CONFIGURE_DEPENDS  ${SOURCE_DIR}/cpp/Jl*.cxx)
 add_library(XRootDWrap SHARED ${SOURCE_DIR}/cpp/jlXRootD.cxx ${GEN_SOURCES})
-target_include_directories(XRootDWrap PRIVATE ${SOURCE_DIR})
+target_include_directories(XRootDWrap PRIVATE ${SOURCE_DIR} ${XRootD_INCLUDE_DIRS})
 target_link_libraries(XRootDWrap JlCxx::cxxwrap_julia JlCxx::cxxwrap_julia_stl ${XRootD_LIBRARIES})
 
 install(TARGETS XRootDWrap

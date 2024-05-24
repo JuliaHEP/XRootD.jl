@@ -9,12 +9,18 @@ out_jl_dir          = "jl"
 clang_opts          = ["-v"]
 
 include_dirs        = [ "./cpp", 
-                        "@XRootD_INCLUDE_DIRS@",
+                        "@XRootD_INCLUDE_DIR@",
                         "@Julia_INCLUDE_DIRS@",  
                         "@JlCxx_DIR@/../../../include"]
 
-input               = [ "XrdCl/XrdClFileSystem.hh",
+input               = [ "XRootDWrap.h",
+                        "XrdCl/XrdClFileSystem.hh",
                         "XrdCl/XrdClFile.hh",
+                        "XrdCl/XrdClXRootDResponses.hh",
+                        "XrdCl/XrdClURL.hh",
+                        "XrdCl/XrdClStatus.hh",
+                        "XrdCl/XrdClPropertyList.hh",
+                        "XrdCl/XrdClCopyProcess.hh"
                       ]
 
 extra_headers       = [ ]
@@ -24,3 +30,4 @@ veto_list           = "XRootD-veto.h"
 cxx-std             = "c++17"
 inheritances        = [ ]
 export_blacklist    = [ ]
+cxxwrap_version     = "0.14"

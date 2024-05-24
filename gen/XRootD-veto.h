@@ -1,0 +1,46 @@
+std::map
+// std::vector arguments ???
+XrdCl::XRootDStatus XrdCl::File::SetXAttr(const std::vector<XrdCl::xattr_t> &, std::vector<XrdCl::XAttrStatus> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::SetXAttr(const std::vector<XrdCl::xattr_t> &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::DelXAttr(const std::vector<std::string> &, std::vector<XrdCl::XAttrStatus> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::DelXAttr(const std::vector<std::string> &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::GetXAttr(const std::vector<std::string> &, std::vector<XrdCl::XAttr> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::GetXAttr(const std::vector<std::string> &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::ListXAttr(std::vector<XrdCl::XAttr> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::File::ListXAttr(XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::GetXAttr(const std::string &, const std::vector<std::string> &, std::vector<XrdCl::XAttr> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::GetXAttr(const std::string &, const std::vector<std::string> &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::SetXAttr(const std::string &, const std::vector<XrdCl::xattr_t> &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::SetXAttr(const std::string &, const std::vector<XrdCl::xattr_t> &, std::vector<XrdCl::XAttrStatus> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::DelXAttr(const std::string &, const std::vector<std::string> &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::DelXAttr(const std::string &, const std::vector<std::string> &, std::vector<XrdCl::XAttrStatus> &, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::ListXAttr(const std::string &, XrdCl::ResponseHandler *, uint16_t)
+XrdCl::XRootDStatus XrdCl::FileSystem::ListXAttr(const std::string &, std::vector<XrdCl::XAttr> &, uint16_t)
+
+// operator on enums causes duplication errors in the pre-compilation of Julia module
+XrdCl::OpenFlags::Flags XrdCl::operator|(const XrdCl::OpenFlags::Flags, const XrdCl::OpenFlags::Flags)
+XrdCl::Access::Mode XrdCl::operator|(const XrdCl::Access::Mode, const XrdCl::Access::Mode)
+XrdCl::MkDirFlags::Flags XrdCl::operator|(const XrdCl::MkDirFlags::Flags, const XrdCl::MkDirFlags::Flags)
+XrdCl::DirListFlags::Flags XrdCl::operator|(const XrdCl::DirListFlags::Flags, const XrdCl::DirListFlags::Flags)
+XrdCl::PrepareFlags::Flags XrdCl::operator|(const XrdCl::PrepareFlags::Flags, const XrdCl::PrepareFlags::Flags)
+XrdCl::OpenFlags::Flags XrdCl::operator&(const XrdCl::OpenFlags::Flags, const XrdCl::OpenFlags::Flags)
+XrdCl::Access::Mode XrdCl::operator&(const XrdCl::Access::Mode, const XrdCl::Access::Mode)
+XrdCl::MkDirFlags::Flags XrdCl::operator&(const XrdCl::MkDirFlags::Flags, const XrdCl::MkDirFlags::Flags)
+XrdCl::DirListFlags::Flags XrdCl::operator&(const XrdCl::DirListFlags::Flags, const XrdCl::DirListFlags::Flags)
+XrdCl::PrepareFlags::Flags XrdCl::operator&(const XrdCl::PrepareFlags::Flags, const XrdCl::PrepareFlags::Flags)
+XrdCl::OpenFlags::Flags XrdCl::operator^(const XrdCl::OpenFlags::Flags, const XrdCl::OpenFlags::Flags)
+XrdCl::Access::Mode XrdCl::operator^(const XrdCl::Access::Mode, const XrdCl::Access::Mode)
+XrdCl::MkDirFlags::Flags XrdCl::operator^(const XrdCl::MkDirFlags::Flags, const XrdCl::MkDirFlags::Flags)
+XrdCl::DirListFlags::Flags XrdCl::operator^(const XrdCl::DirListFlags::Flags, const XrdCl::DirListFlags::Flags)
+XrdCl::PrepareFlags::Flags XrdCl::operator^(const XrdCl::PrepareFlags::Flags, const XrdCl::PrepareFlags::Flags)
+XrdCl::OpenFlags::Flags XrdCl::operator~(const XrdCl::OpenFlags::Flags)
+XrdCl::Access::Mode XrdCl::operator~(const XrdCl::Access::Mode)
+XrdCl::MkDirFlags::Flags XrdCl::operator~(const XrdCl::MkDirFlags::Flags)
+XrdCl::DirListFlags::Flags XrdCl::operator~(const XrdCl::DirListFlags::Flags)
+XrdCl::PrepareFlags::Flags XrdCl::operator~(const XrdCl::PrepareFlags::Flags)
+
+// Ambiguous overload between char* and std::string
+void XrdCl::URL::URL(const char *)
+
+XrdCl::XRootDStatus XrdCl::PropertyList::Get(const std::string &)
+

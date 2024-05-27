@@ -20,7 +20,8 @@ input               = [ "XRootDWrap.h",
                         "XrdCl/XrdClURL.hh",
                         "XrdCl/XrdClStatus.hh",
                         "XrdCl/XrdClPropertyList.hh",
-                        "XrdCl/XrdClCopyProcess.hh"
+                        "XrdCl/XrdClCopyProcess.hh",
+                        "XrdCl/XrdClBuffer.hh"
                       ]
 
 extra_headers       = [ ]

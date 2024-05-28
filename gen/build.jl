@@ -17,5 +17,6 @@ xrootd_prefix = XRootD_jll.artifact_dir
 
 run(`cmake -DCMAKE_BUILD_TYPE=Release
            -DCMAKE_CXX_STANDARD=17
-           -DCMAKE_PREFIX_PATH=$cxxwrap_prefix\;$xrootd_prefix  $sourcedir`)
+           -DCMAKE_PREFIX_PATH=$cxxwrap_prefix\;$xrootd_prefix  $sourcedir
+           -DCxxWrap_VERSION=$(pkgversion(CxxWrap))`)
 run(`cmake --build . --config Release --parallel 8`)

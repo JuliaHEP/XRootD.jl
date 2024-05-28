@@ -9,11 +9,11 @@ end
 File() = File(XRootD.XrdCl!File(), 0, 0)
     
 """
-    File(url::String, flags::UInt16=0x0000, mode::UInt16=0x0000)
+    File(url::String, flags=0x0000, mode=0x0000)
 
 File crates a File object and opens it.
 """
-function File(url::String, flags::UInt16=0x0000, mode::UInt16=0x0000)
+function File(url::String, flags=0x0000, mode=0x0000)
     file = XRootD.XrdCl!File()
     st = XRootD.Open(file, url, flags, mode)
     if isOK(st)
@@ -172,7 +172,7 @@ end
 readlines reads lines from the file.
 """
 function Base.readlines(f::File, size=0, offset=0, chunk=0)
-    lines = []
+    lines = String[]
     st = XRootDStatus()
     offset != 0 && (f.currentOffset = offset)
     while !eof(f)

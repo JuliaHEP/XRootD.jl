@@ -35,7 +35,7 @@ function Base.stat(fs::FileSystem, path::String, timeout::UInt16=0x0000)
     st = XRootD.Stat(fs, path, statinfo_p, timeout)
     if isOK(st)
         statinfo = StatInfo(statinfo_p[][]) # copy constructor
-        # delete(statinfo_p[])              # delete the pointer
+        XRootD.delete(statinfo_p[])         # delete the pointer
         return st, statinfo
     else
         return st, nothing
@@ -76,7 +76,7 @@ function locate(fs::FileSystem, path::String, flags::XRootD.XrdCl!OpenFlags!Flag
     if isOK(st)
         #locations = LocationInfo(locations_p[][]) # copy constructor
         locations = [At(locations_p[], i)[] for i in 0:GetSize(locations_p[])-1]
-        # delete(locations_p[])                   # delete the pointer
+        XRootD.delete(locations_p[])                   # delete the pointer
         return st, locations
     else
         return st, nothing
@@ -130,7 +130,7 @@ function query(fs::FileSystem, code::XRootD.XrdCl!QueryCode!Code , arg::String, 
     st = XRootD.Query(fs, code, arg_b, buffer_p, timeout)
     if isOK(st)
         response = ToString(buffer_p[][])
-        # delete(buffer_p[])                   # delete the pointer
+        XRootD.delete(buffer_p[])                   # delete the pointer
         return st, response
     else
         return st, nothing
@@ -186,7 +186,7 @@ function protocol(fs::FileSystem, timeout::UInt16=0x0000)
     st = XRootD.Protocol(fs, protocol_p, timeout)
     if isOK(st)
         protocol = ProtocolInfo(GetVersion(protocol_p[][]), GetHostInfo(protocol_p[][])) # constructor
-        # delete(protocol_p[])                   # delete the pointer
+        XRootD.delete(protocol_p[])                   # delete the pointer
         return st, protocol
     else
         return st, nothing

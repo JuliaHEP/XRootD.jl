@@ -4,8 +4,9 @@ export File
 mutable struct File
     file::XRootD.XrdCl!File
     currentOffset::UInt64
+    filesize::UInt64
 end
-File() = File(XRootD.XrdCl!File(), 0)
+File() = File(XRootD.XrdCl!File(), 0, 0)
     
 """
     File(url::String, flags::UInt16=0x0000, mode::UInt16=0x0000)
@@ -15,7 +16,13 @@ File crates a File object and opens it.
 function File(url::String, flags::UInt16=0x0000, mode::UInt16=0x0000)
     file = XRootD.XrdCl!File()
     st = XRootD.Open(file, url, flags, mode)
-    return isOK(st) ? File(file,0) : nothing
+    if isOK(st)
+        f = File(file, 0, 0)
+        f.filesize = stat(f)[2].size
+        return f
+    else
+        return nothing
+    end
 end
 
 """
@@ -34,6 +41,9 @@ Open a file.
 """
 function Base.open(f::File, url::String, flags=0x0000, mode=0x0000)
     st = Open(f.file, url, flags, mode)
+    if isOK(st)
+        f.filesize = stat(f)[2].size
+    end
     return st, nothing
 end
 
@@ -44,6 +54,8 @@ Close the file.
 """
 function Base.close(f::File)
     st = Close(f.file)
+    f.currentOffset = 0
+    f.filesize = 0
     return st, nothing
 end
 
@@ -57,11 +69,20 @@ function Base.stat(f::File, force::Bool=true)
     st = XRootD.Stat(f.file, force, statinfo_p)
     if isOK(st)
         statinfo = StatInfo(statinfo_p[][]) # copy constructor
-        # delete(statinfo_p[])              # delete the pointer
+        XRootD.delete(statinfo_p[])         # delete the pointer
         return st, statinfo
     else
         return st, nothing
     end
+end
+
+"""
+    Base.eof(f::File)
+
+Check if the file is at the end.
+"""
+function Base.eof(f::File)
+    return f.currentOffset >= f.filesize
 end
 
 """
@@ -108,6 +129,11 @@ function Base.read(f::File, size, offset=0)
     end
 end
 
+"""
+    Base.readline(f::File, size=0, offset=0, chunk=0)
+
+readline reads a line from the file.
+"""
 function Base.readline(f::File, size=0, offset=0, chunk=0)
     if offset == 0
         offset = f.currentOffset
@@ -122,14 +148,11 @@ function Base.readline(f::File, size=0, offset=0, chunk=0)
     buffer_p = convert(Ptr{Nothing}, pointer(buffer))
     line = ""
     st = XRootDStatus(0x0001)
-    @show 1, st  
     while offset < off_end
         readsize = Ref{UInt32}(0)
         st = Read(f.file, UInt64(offset), UInt32(chunk), buffer_p, readsize)
-        if isError(st) || readsize[] == 0
-            @show 2, st 
-            break
-        end
+        isError(st) && break
+        readsize[] == 0 && break
         offset += readsize[]
         nl = findfirst(isequal(0x0A), buffer[1:readsize[]])
         if isnothing(nl)
@@ -139,7 +162,23 @@ function Base.readline(f::File, size=0, offset=0, chunk=0)
             offset = off_end
         end
     end
-    @show 3, st, line 
     f.currentOffset += Base.length(line)
     return st, line
+end
+
+"""
+    Base.readlines(f::File, size=0, offset=0, chunk=0)
+
+readlines reads lines from the file.
+"""
+function Base.readlines(f::File, size=0, offset=0, chunk=0)
+    lines = []
+    st = XRootDStatus()
+    offset != 0 && (f.currentOffset = offset)
+    while !eof(f)
+        st, line = readline(f, size, 0, chunk)
+        isError(st) && break
+        push!(lines, line)
+    end
+    return st, lines
 end

@@ -17,10 +17,7 @@ using XRootD.XrdCl
     @test statinfo.size == 13
 
     f = File()
-    st, response = open(f, "root://localhost:1094//tmp/new_testfile", OpenFlags.Write)
-    if isError(st)
-        st, response = open(f, "root://localhost:1094//tmp/new_testfile", OpenFlags.New|OpenFlags.Write)
-    end
+    st, response = open(f, "root://localhost:1094//tmp/new_testfile", OpenFlags.Write|OpenFlags.Delete)
     @test isOK(st)
     st, response = truncate(f, 0)
     @test isOK(st)

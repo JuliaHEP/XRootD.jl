@@ -11,3 +11,10 @@ XRootD_jll = "b6113df7-b24e-50c0-846f-35a2e36cb9d5"
 
 [compat]
 CxxWrap = "0.14"
+XRootD_cxxwrap_jll = "0.1"
+XRootD_jll = "5.6"
+julia = "1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"

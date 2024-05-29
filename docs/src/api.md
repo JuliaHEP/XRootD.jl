@@ -2,24 +2,22 @@
 
 Documentation for `XRootD.jl` public interface.
 
-## Index - Types
+---
+
+## Index
 ```@index
 Pages   = ["api.md"]
 Modules = [XRootD, XRootD.XrdCl]
 Order   = [:type]
 ```
-## Index - Functions
 ```@index
 Pages   = ["api.md"]
-Modules = [XRootD, XRootD.XrdCl]
+Modules = [XRootD, XRootD.XrdCl, Base]
 Order   = [:function]
 ```
 
-## Modules
-```@autodocs
-Modules = [XRootD, XRootD.XrdCl]
-Order = [:module]
-```
+---
+
 ## Types
 This is the list of all types and functions defined for XRootD
 

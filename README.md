@@ -3,7 +3,7 @@
 
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https:///JuliaHEP.github.io/XRootD.jl/dev/)
 [![Build Status](https://github.com/JuliaHEP/XRootD.jl/workflows/CI/badge.svg)](https://github.com/JuliaHEP/XRootD.jl/actions)
-[![codecov](https://codecov.io/gh/JuliaHEP/XRootD.jl/graph/badge.svg?token=AS74WXOYT6)](https://codecov.io/gh/JuliaHEP/XRootD.jl)[![License](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
+[[![License](https://img.shields.io/badge/license-LGPL-blue.svg)](LICENSE)
 
 ## Description
 

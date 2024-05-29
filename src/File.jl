@@ -11,7 +11,13 @@ File() = File(XRootD.XrdCl!File(), 0, 0)
 """
     File(url::String, flags=0x0000, mode=0x0000)
 
-File crates a File object and opens it.
+Create a File object and to open it.
+# Arguments
+- `url::String`: the URL of the file.
+- `flags::Int`: the flags to open the file (examples: OpenFlags.Read, OpenFlags.Write, OpenFlags.Delete).
+- `mode::Int`: the mode to open the file (examples: Access.UR, Access.UW).
+# Returns
+- `File`: the File object (if the file is opened successfully) or `nothing`.
 """
 function File(url::String, flags=0x0000, mode=0x0000)
     file = XRootD.XrdCl!File()
@@ -29,6 +35,10 @@ end
     Base.isopen(f::File)
 
 Check if the file is open.
+# Arguments
+- `f::File`: the File object.
+# Returns
+- `Bool`: `true` if the file is open, `false` otherwise.
 """
 function Base.isopen(f::File)
     XRootD.IsOpen(f.file)
@@ -38,6 +48,15 @@ end
     Base.open(f::File, url::String, flags=0x0000, mode=0x0000)
 
 Open a file.
+# Arguments
+- `f::File`: the File object.
+- `url::String`: the URL of the file.
+- `flags::Int`: the flags to open the file (examples: OpenFlags.Read, OpenFlags.Write, OpenFlags.Delete).
+- `mode::Int`: the mode to open the file (examples: Access.UR, Access.UW).
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `nothing`
 """
 function Base.open(f::File, url::String, flags=0x0000, mode=0x0000)
     st = Open(f.file, url, flags, mode)
@@ -51,6 +70,12 @@ end
     Base.close(f::File)
 
 Close the file.
+# Arguments
+- `f::File`: the File object.
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `nothing`
 """
 function Base.close(f::File)
     st = Close(f.file)
@@ -63,6 +88,13 @@ end
     Base.stat(f::File, force::Bool=true)
 
 Stat the file.
+# Arguments
+- `f::File`: the File object.
+- `force::Bool`: force the stat operation.
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `StatInfo`: the stat information (or `nothing` if the operation failed).
 """
 function Base.stat(f::File, force::Bool=true)
     statinfo_p = Ref(CxxPtr{StatInfo}(C_NULL))
@@ -80,6 +112,10 @@ end
     Base.eof(f::File)
 
 Check if the file is at the end.
+# Arguments
+- `f::File`: the File object.
+# Returns
+- `Bool`: `true` if the file is at the end, `false` otherwise.
 """
 function Base.eof(f::File)
     return f.currentOffset >= f.filesize
@@ -89,6 +125,13 @@ end
     Base.truncate(f::File, size::Int64)
 
 Truncate the file.
+# Arguments
+- `f::File`: the File object.
+- `size::Int64`: the size to truncate the file.
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `nothing`
 """
 function Base.truncate(f::File, size::Int64)
     st = Truncate(f.file, size)
@@ -99,6 +142,15 @@ end
     Base.write(f::File, data::Array{UInt8}, size, offset=0)
 
 Write data to the file.
+# Arguments
+- `f::File`: the File object.
+- `data::Array{UInt8}`: the data to write.
+- `size::Int`: the size of the data to be writen.
+- `offset::Int`: the offset to write the data.
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `nothing`
 """
 function Base.write(f::File, data::Array{UInt8}, size, offset=0)
     data_p = convert(Ptr{Nothing}, pointer(data))
@@ -111,6 +163,15 @@ Base.write(f::File, data::String, offset=0) = Base.write(f, Vector{UInt8}(data),
     Base.read(f::File, size, offset=0)
 
 Read data from the file.
+# Arguments
+- `f::File`: the File object.
+- `size::Int`: the size of the data to read.
+- `offset::Int`: the offset to read the data.
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `Array{UInt8}`: the data read (or `nothing` if the operation failed).
+
 """
 function Base.read(f::File, size, offset=0)
     buffer = Array{UInt8}(undef, size)
@@ -132,7 +193,16 @@ end
 """
     Base.readline(f::File, size=0, offset=0, chunk=0)
 
-readline reads a line from the file.
+read one line from the file until it finds a linefeed (\n) or reaches the end of the file.
+# Arguments
+- `f::File`: the File object.
+- `size::Int`: the maximum size of the line to read.
+- `offset::Int`: the offset in the file (0 indicates to continue reading from previous position).
+- `chunk::Int`: the size of the chunk to read (0 indicates 2MB).
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `String`: the line read (or `nothing` if the operation failed).
 """
 function Base.readline(f::File, size=0, offset=0, chunk=0)
     if offset == 0
@@ -170,6 +240,15 @@ end
     Base.readlines(f::File, size=0, offset=0, chunk=0)
 
 readlines reads lines from the file.
+# Arguments
+- `f::File`: the File object.
+- `size::Int`: the maximum size of the lines to read.
+- `offset::Int`: the offset in the file (0 indicates to continue reading from previous position).
+- `chunk::Int`: the size of the chunk to read (0 indicates 2MB).
+# Returns
+- `Tuple` of:
+    - `XRootDStatus`: the status of the operation.
+    - `Array{String}`: the lines read (or `nothing` if the operation failed).
 """
 function Base.readlines(f::File, size=0, offset=0, chunk=0)
     lines = String[]

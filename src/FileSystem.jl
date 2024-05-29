@@ -9,7 +9,7 @@ const FileSystem = XRootD.XrdCl!FileSystem
 """
     FileSystem(url::String, isServer::Bool=false)
 
-Create a FileSystem object.
+Creates a FileSystem object. It is a wrapper around the XRootD FileSystem class that is used for sending queries to the XRootD server. 
 """
 function FileSystem(url::String, isServer::Bool=false)
     FileSystem(XRootD.XrdCl!URL(url), false)
@@ -18,17 +18,32 @@ end
 """
     ping(fs::FileSystem)
 
-Ping the server.    
+Check if the server is alive - sync
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always    
 """
-function ping(fs::FileSystem)
-    st = XRootD.Ping(fs)
+function ping(fs::FileSystem, timeout::UInt16=0x0000)
+    st = XRootD.Ping(fs, timeout)
     return st, nothing
 end
 
 """
     Base.stat(fs::FileSystem, path::String, timeout::UInt16=0x0000)
 
-Get the StatInfo of a file or directory.
+Gets the StatInfo of a file or directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the file or directory
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `statinfo::StatInfo`: The StatInfo object (or `nothing` if the operation failed) 
 """
 function Base.stat(fs::FileSystem, path::String, timeout::UInt16=0x0000)
     statinfo_p = Ref(CxxPtr{StatInfo}(C_NULL))
@@ -41,10 +56,20 @@ function Base.stat(fs::FileSystem, path::String, timeout::UInt16=0x0000)
         return st, nothing
     end
 end
+
 """
     copy(fs::FileSystem, src::String, dest::String; force::Bool=false)
 
 Simple method to copy a file or directory. It uses some default options. For more control use the CopyProcess class.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `src::String`: The source path
+- `dest::String`: The destination path
+- `force::Bool`: If `true` the destination will be overwritten
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `results::PropertyList`: The results of the operation (or `nothing` if the operation failed)
 """
 function Base.copy(fs::FileSystem, src::String, dest::String; force::Bool=false)
     pl = XRootD.XrdCl!PropertyList()
@@ -69,6 +94,15 @@ end
     locate(fs::FileSystem, path::String, flags::XRootD.XrdCl!OpenFlags!Flags, timeout::UInt16=0x0000)
 
 Get the locations of a file or directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the file or directory
+- `flags::XrdCl.OpenFlags`: The flags
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `locations::Vector{LocationInfo}`: The locations of the file or directory (or `nothing` if the operation failed)
 """
 function locate(fs::FileSystem, path::String, flags::XRootD.XrdCl!OpenFlags!Flags, timeout::UInt16=0x0000)
     locations_p = Ref(CxxPtr{LocationInfo}(C_NULL))
@@ -82,28 +116,58 @@ function locate(fs::FileSystem, path::String, flags::XRootD.XrdCl!OpenFlags!Flag
         return st, nothing
     end
 end
+
 """
     Base.rm(fs::FileSystem, path::String, timeout::UInt16=0x0000)
 
 Remove a file or directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the file or directory
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always
 """
 function Base.rm(fs::FileSystem, path::String, timeout::UInt16=0x0000)
     st = XRootD.Rm(fs, path, timeout)
     return st, nothing
 end
+
 """
     Base.mv(fs::FileSystem, src::String, dest::String, timeout::UInt16=0x0000)
 
 Move or rename a file or directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `src::String`: The source path
+- `dest::String`: The destination path
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always
 """
 function Base.mv(fs::FileSystem, src::String, dest::String, timeout::UInt16=0x0000)
     st = XRootD.Mv(fs, src, dest, timeout)
     return st, nothing
 end
+
 """
 Base.readdir(fs::FileSystem, path::String, flags::XRootD.XrdCl!DirListFlags!Flags=XRootD.XrdCl!DirListFlags!None; join::Bool = false, sort::Bool = false)
 
-List entries in a directory    
+List entries in a directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the directory
+- `flags::XrdCl.DirListFlags`: The flags
+- `join::Bool`: If `true` the entries will be joined with the path
+- `sort::Bool`: If `true` the entries will be sorted
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `entries::Vector{String}`: The entries in the directory (or `nothing` if the operation failed)
 """
 function Base.readdir(fs::FileSystem, path::String, flags::XRootD.XrdCl!DirListFlags!Flags=XRootD.XrdCl!DirListFlags!None; 
                         join::Bool = false, sort::Bool = false)
@@ -118,10 +182,20 @@ function Base.readdir(fs::FileSystem, path::String, flags::XRootD.XrdCl!DirListF
         return st, nothing
     end
 end
+
 """
     query(fs::FileSystem, code::XRootD.XrdCl!QueryCode!Code , arg::String, timeout::UInt16=0x0000)
 
 Query the server.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `code::XrdCl.QueryCode`: The query code
+- `arg::String`: The argument
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `response::String`: The response (or `nothing` if the operation failed)
 """
 function query(fs::FileSystem, code::XRootD.XrdCl!QueryCode!Code , arg::String, timeout::UInt16=0x0000)
     buffer_p = Ref(CxxPtr{XRootD.XrdCl!Buffer}(C_NULL))
@@ -136,10 +210,20 @@ function query(fs::FileSystem, code::XRootD.XrdCl!QueryCode!Code , arg::String, 
         return st, nothing
     end
 end
+
 """
     Base.truncate(fs::FileSystem, path::String, size::Int64, timeout::UInt16=0x0000)
 
 Truncate a file to a specified size.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the file
+- `size::Int64`: The new size
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always
 """
 function Base.truncate(fs::FileSystem, path::String, size::Int64, timeout::UInt16=0x0000)
     st = XRootD.Truncate(fs, path, size, timeout)
@@ -150,6 +234,15 @@ end
     Base.mkdir(fs::FileSystem, path::String, mode::XRootD.XrdCl!Access!Mode=Access.None, timeout::UInt16=0x0000)
 
 Create a directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the directory
+- `mode::XrdCl.Access.Mode`: The mode
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always
 """
 function Base.mkdir(fs::FileSystem, path::String, mode::XRootD.XrdCl!Access!Mode=Access.None, timeout::UInt16=0x0000)
     st = XRootD.MkDir(fs, path, XRootD.XrdCl!MkDirFlags!None, mode, timeout)
@@ -160,6 +253,14 @@ end
     rmdir(fs::FileSystem, path::String, timeout::UInt16=0x0000)
 
 Remove a directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the directory
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always
 """
 function  rmdir(fs::FileSystem, path::String, timeout::UInt16=0x0000)
     st = XRootD.RmDir(fs, path, timeout)
@@ -170,6 +271,15 @@ end
     Base.chmod(fs::FileSystem, path::String, mode, timeout::UInt16=0x0000)
 
 Change the mode of a file or directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `path::String`: The path of the file or directory
+- `mode`: The new mode
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `nothing`: Always
 """
 function Base.chmod(fs::FileSystem, path::String, mode, timeout::UInt16=0x0000)
     st = XRootD.ChMod(fs, path, mode, timeout)
@@ -180,6 +290,13 @@ end
     protocol(fs::FileSystem, timeout::UInt16=0x0000)
 
 Get the protocol information.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `timeout::UInt16`: The timeout in seconds
+# Returns
+- `Tuple` of:
+    - `st::XRootD.XrdCl!Status`: The status of the operation
+    - `protocol::ProtocolInfo`: The protocol information (or `nothing` if the operation failed)
 """
 function protocol(fs::FileSystem, timeout::UInt16=0x0000)
     protocol_p = Ref(CxxPtr{ProtocolInfo}(C_NULL))
@@ -192,5 +309,3 @@ function protocol(fs::FileSystem, timeout::UInt16=0x0000)
         return st, nothing
     end
 end
-
-

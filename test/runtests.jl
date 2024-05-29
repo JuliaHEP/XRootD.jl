@@ -1,10 +1,9 @@
 using Test
-
-using XRootD_jll
 using XRootD.XrdCl
+import XRootD
 
 #---Start the xrootd server-----------------------------------------------------------------------
-xrootd_server = run(XRootD_jll.xrootd(); wait=false)
+xrootd_server = run(XRootD.xrootd(); wait=false)
 sleep(1)
 
 #---Test the XRootD.jl package---------------------------------------------------------------------

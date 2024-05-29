@@ -1,6 +1,6 @@
 module XRootD
     using CxxWrap
-    using XRootD_jll
+    using XRootD_jll: xrootd, xrdfs, xrdcp 
     using Libdl
 
     # Check whether the wrappers have been build locally otherwise use the binary package XRootD_cxxwrap_jll
@@ -17,6 +17,9 @@ module XRootD
     function __init__()
         @initcxx
     end
+
+    # Export XRootD executables (from XRootD_jll)
+    export xrootd, xrdfs, xrdcp
 
     include("XrdCl.jl")
 

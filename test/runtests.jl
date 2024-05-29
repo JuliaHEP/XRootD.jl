@@ -1,4 +1,3 @@
-using Revise
 using Test
 
 using XRootD_jll
@@ -8,6 +7,7 @@ using XRootD.XrdCl
 xrootd_server = run(XRootD_jll.xrootd(); wait=false)
 sleep(1)
 
+#---Test the XRootD.jl package---------------------------------------------------------------------
 @testset "XRootD tests" verbose = true begin
     include("testFileSystem.jl")
     include("testFile.jl")

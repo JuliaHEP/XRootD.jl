@@ -45,11 +45,10 @@ jobs:
           prefix: xvfb-run
       - uses: julia-actions/julia-processcoverage@v1
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: codecov/codecov-action@v4.0.1
         with:
-          file: lcov.info
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: JuliaHEP/XRootD.jl
   docs:
     name: Documentation
     runs-on: ubuntu-latest

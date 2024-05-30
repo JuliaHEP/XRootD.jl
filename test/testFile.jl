@@ -19,6 +19,7 @@ using XRootD.XrdCl
     f = File()
     st, response = open(f, "root://localhost:1094//tmp/new_testfile", OpenFlags.Write|OpenFlags.Delete)
     @test isOK(st)
+    @test isopen(f)
     st, response = truncate(f, 0)
     @test isOK(st)
     st, statinfo = stat(f)
@@ -45,6 +46,21 @@ using XRootD.XrdCl
     st, buffer = read(f, statinfo.size)
     @test isOK(st)
     @test buffer == Vector{UInt8}(data)
+
+    # Read more than the file size
+    st, buffer = read(f, statinfo.size + 100)
+    @test isOK(st)
+    @test length(buffer) == statinfo.size
+
+    # Read with offset
+    st, buffer = read(f, 5, 5)
+    @test isOK(st)
+    @test buffer == Vector{UInt8}("D:Hel")
+
+    # Read beyond the file size
+    st, buffer = read(f, 100, 100)
+    @test isOK(st)
+    @test length(buffer) == 0
 
     # Close the file
     st, response = close(f)
@@ -76,12 +92,15 @@ using XRootD.XrdCl
     st, response = close(f)
     @test isOK(st)
 
+    # Open the file for reading lines
     st, response = open(f, "root://localhost:1094//tmp/testfile3", OpenFlags.Read)
     @test isOK(st)
     st, lines = readlines(f)
     @test isOK(st)
     @test lines == ["Hello\n", "World\n", "Folks!"]
-    
+    st, response = close(f)
+    @test isOK(st)
+    @test !isopen(f)
 
 
 end

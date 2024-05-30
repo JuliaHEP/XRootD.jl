@@ -21,7 +21,24 @@ using XRootD.XrdCl
     @test isOK(st)
     st, result = copy(fs, "/tmp/testfile", "/tmp/testfile2", force=true)
     @test isOK(st)
-    @test isfile("/tmp/testfile2")
+    @test isfile("/tmp/testfile2")  # Check if the file was copied
+
+    # test stat of newly copied file
+    st, statinfo2 = stat(fs, "/tmp/testfile2")
+    isOK(st)
+    isfile(statinfo2)
+    @test statinfo.size == 13
+    @test isreadable(statinfo2)
+    @test iswritable(statinfo2)
+    @test !isdir(statinfo2)
+    @test !isExecutable(statinfo2)
+    @test !isOffline(statinfo2)
+    @test statinfo2.owner == statinfo.owner
+    @test statinfo2.group == statinfo.group
+    @test statinfo2.modtime == statinfo.modtime
+    @test statinfo2.flags == statinfo.flags
+    @test statinfo2.octmode[1:3] == statinfo.octmode[1:3]  # owner permissions the same
+
 
     # Locate
     st , locations = locate(fs, "/tmp", OpenFlags.Refresh)

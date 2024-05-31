@@ -153,8 +153,8 @@ Write data to the file.
     - `nothing`
 """
 function Base.write(f::File, data::Array{UInt8}, size, offset=0)
-    data_p = convert(Ptr{Nothing}, pointer(data))
-    st = Write(f.file, UInt64(offset), UInt32(size), data_p)
+    data_p = Ptr{Nothing}(pointer(data))
+    GC.@preserve data st = Write(f.file, UInt64(offset), UInt32(size), data_p)
     return st, nothing
 end
 Base.write(f::File, data::String, offset=0) = Base.write(f, Vector{UInt8}(data), Base.length(data), offset)
@@ -175,18 +175,37 @@ Read data from the file.
 """
 function Base.read(f::File, size, offset=0)
     buffer = Array{UInt8}(undef, size)
-    buffer_p = convert(Ptr{Nothing}, pointer(buffer))
+    buffer_p = Ptr{Nothing}(pointer(buffer))
     readsize = Ref{UInt32}(0)
     if offset == 0
         offset = f.currentOffset
     else
         f.currentOffset = offset
     end
-    st = Read(f.file, UInt64(offset), UInt32(size), buffer_p, readsize)
+    GC.@preserve buffer st = Read(f.file, UInt64(offset), UInt32(size), buffer_p, readsize)
     if isOK(st)
         return st, buffer[1:readsize[]]
     else
         return st, nothing
+    end
+end
+
+"""
+    Base.unsafe_read(f::File, ptr::Ptr{Nothing}, size, offset=0)
+
+Read data from the file into a pointer.
+# Arguments
+- `f::File`: the File object.
+- `ptr::Ptr{Nothing}`: the pointer to read the data.
+- `size::Int`: the size of the data to read (or 0 if failed).
+"""
+function Base.unsafe_read(f::File, ptr::Ptr{Nothing}, size, offset=0)
+    readsize = Ref{UInt32}(0)
+    st = Read(f.file, UInt64(offset), UInt32(size), ptr, readsize)
+    if isOK(st)
+        return st, readsize[]
+    else
+        return st, 0
     end
 end
 
@@ -215,12 +234,12 @@ function Base.readline(f::File, size=0, offset=0, chunk=0)
     size < chunk && (chunk = size)
     off_end = offset + size
     buffer = Array{UInt8}(undef, chunk)
-    buffer_p = convert(Ptr{Nothing}, pointer(buffer))
+    buffer_p = Ptr{Nothing}(pointer(buffer))
     line = ""
     st = XRootDStatus(0x0001)
     while offset < off_end
         readsize = Ref{UInt32}(0)
-        st = Read(f.file, UInt64(offset), UInt32(chunk), buffer_p, readsize)
+        GC.@preserve buffer st = Read(f.file, UInt64(offset), UInt32(chunk), buffer_p, readsize)
         isError(st) && break
         readsize[] == 0 && break
         offset += readsize[]

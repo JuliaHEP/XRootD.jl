@@ -19,6 +19,10 @@ using XRootD.XrdCl
 
     st, statinfo = stat(fs, "/tmp/testfile")
     @test isOK(st)
+    @test isfile(statinfo)
+
+    show(devnull, statinfo) # test the show method
+
     st, result = copy(fs, "/tmp/testfile", "/tmp/testfile2", force=true)
     @test isOK(st)
     @test isfile("/tmp/testfile2")  # Check if the file was copied
@@ -44,6 +48,8 @@ using XRootD.XrdCl
     st , locations = locate(fs, "/tmp", OpenFlags.Refresh)
     @test isOK(st)
     @test length(locations) > 0
+
+    show(devnull, locations[1]) # test the show method
 
     # Remove
     st, result = rm(fs, "/tmp/testfile2")
@@ -113,5 +119,7 @@ using XRootD.XrdCl
     # Get protocol
     st, protocolinfo = protocol(fs)
     @test isOK(st)
+    show(devnull, protocolinfo) # test the show method
+
 end
 

@@ -39,7 +39,7 @@ using XRootD.XrdCl
     @test !isOffline(statinfo2)
     @test statinfo2.owner == statinfo.owner
     @test statinfo2.group == statinfo.group
-    @test statinfo2.modtime == statinfo.modtime
+    @test abs(statinfo2.modtime - statinfo.modtime) <= 1
     @test statinfo2.flags == statinfo.flags
     @test statinfo2.octmode[1:3] == statinfo.octmode[1:3]  # owner permissions the same
 

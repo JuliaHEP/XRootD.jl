@@ -108,8 +108,12 @@ function locate(fs::FileSystem, path::String, flags::XRootD.XrdCl!OpenFlags!Flag
     locations_p = Ref(CxxPtr{LocationInfo}(C_NULL))
     st = XRootD.Locate(fs, path, flags, locations_p, timeout)
     if isOK(st)
-        #locations = LocationInfo(locations_p[][]) # copy constructor
-        locations = [At(locations_p[], i)[] for i in 0:GetSize(locations_p[])-1]
+        #locations = LocationInfo(locations_p[][]) # copy constructor does not exists :-(
+        locations = Location[]
+        for i in 0:GetSize(locations_p[])-1
+            loc = At(locations_p[], i)
+            push!(locations, Location(loc |> GetAddress, loc |> GetType, loc |> GetAccessType))
+        end
         XRootD.delete(locations_p[])                   # delete the pointer
         return st, locations
     else

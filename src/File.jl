@@ -100,8 +100,8 @@ function Base.stat(f::File, force::Bool=true)
     statinfo_p = Ref(CxxPtr{StatInfo}(C_NULL))
     st = XRootD.Stat(f.file, force, statinfo_p)
     if isOK(st)
-        statinfo = StatInfo(statinfo_p[][]) # copy constructor
-        XRootD.delete(statinfo_p[])         # delete the pointer
+        statinfo = StatInfo(statinfo_p[][])        # copy constructor
+        CxxWrap.CxxWrapCore.__delete(statinfo_p[]) # delete the pointer
         return st, statinfo
     else
         return st, nothing

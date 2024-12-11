@@ -187,7 +187,6 @@ function Base.readdir(fs::FileSystem, path::String, flags::XRootD.XrdCl!DirListF
     end
 end
 
-
 """
 Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
 
@@ -200,14 +199,22 @@ Walks in a directory tree.
 - `Tuple` of:
     -  dirpath, dirnames, files : Tuple{String,Vector{String},Vector{String}}
 - Throws an exception if the operation fails.
-"""
-# Example
+
+# Examples
 ```julia
-for (dirpath, dirnames, filenames) in walkdir(fs, "/tmp")
-    println("dirpath: $dirpath")
-    println("dirnames: $dirnames")
-    println("filenames: $filenames")
+fs = FileSystem("root://localhost:1094")
+for (path, dirs, files) in walkdir(fs, "/tmp")
+    println("Directories in \$path")
+    for dir in dirs
+        println(joinpath(path, dir)) # path to directories
+    end
+    println("Files in \$path")
+    for file in files
+        println(joinpath(path, file)) # path to files
+    end
 end
+```
+
 """
 function Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
     function _walkdir(chnl, root)

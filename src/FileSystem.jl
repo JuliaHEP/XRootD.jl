@@ -191,15 +191,23 @@ end
 """
 Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
 
-List entries in a directory.
+Walks in a directory tree.
 # Arguments
 - `fs::FileSystem`: The FileSystem object
 - `root::AbstractString`: The path of the directory
-- `flags::XrdCl.DirListFlags`: The flags
 - `topdown::Bool`: start from the top of the directory tree
 # Returns
 - `Tuple` of:
-    -  dirpath, dirnames, files 
+    -  dirpath, dirnames, files : Tuple{String,Vector{String},Vector{String}}
+- Throws an exception if the operation fails.
+"""
+# Example
+```julia
+for (dirpath, dirnames, filenames) in walkdir(fs, "/tmp")
+    println("dirpath: $dirpath")
+    println("dirnames: $dirnames")
+    println("filenames: $filenames")
+end
 """
 function Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
     function _walkdir(chnl, root)
@@ -238,7 +246,6 @@ function Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
     end
     return Channel{Tuple{String,Vector{String},Vector{String}}}(chnl -> _walkdir(chnl, root))
 end
-
 
 """
     query(fs::FileSystem, code::XRootD.XrdCl!QueryCode!Code , arg::String, timeout::UInt16=0x0000)

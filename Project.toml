@@ -1,7 +1,7 @@
 name = "XRootD"
 uuid = "164e3b87-dc46-4cbc-97a6-5b310108fce0"
 authors = ["Pere Mato <pere.mato@cern.ch>"]
-version = "0.2.1"
+version = "0.2.2"
 
 [deps]
 CxxWrap = "1f15a43c-97ca-5a2a-ae31-89f07a497df4"

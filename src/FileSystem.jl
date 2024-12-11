@@ -187,6 +187,59 @@ function Base.readdir(fs::FileSystem, path::String, flags::XRootD.XrdCl!DirListF
     end
 end
 
+
+"""
+Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
+
+List entries in a directory.
+# Arguments
+- `fs::FileSystem`: The FileSystem object
+- `root::AbstractString`: The path of the directory
+- `flags::XrdCl.DirListFlags`: The flags
+- `topdown::Bool`: start from the top of the directory tree
+# Returns
+- `Tuple` of:
+    -  dirpath, dirnames, files 
+"""
+function Base.walkdir(fs::FileSystem, root::AbstractString; topdown=true)
+    function _walkdir(chnl, root)
+        dirs = String[]
+        files = String[]
+        entries_p = Ref(CxxPtr{XRootD.XrdCl!DirectoryList}(C_NULL))
+        st = XRootD.DirList(fs, root, XRootD.XrdCl!DirListFlags!Stat, entries_p)
+        if !isOK(st)
+            try
+                throw(ErrorException("$st"))
+            catch err
+                close(chnl, err)
+            end
+            return
+        end
+        for i in 0:GetSize(entries_p[])-1
+            entry = At(entries_p[], i)
+            name = entry |> GetName |> String
+            stat = entry |> GetStatInfo
+            if isdir(stat[])
+                push!(dirs, name)
+            else
+                push!(files, name)
+            end
+        end
+        if topdown
+            push!(chnl, (root, dirs, files))
+        end
+        for dir in dirs
+            _walkdir(chnl, joinpath(root, dir))
+        end
+        if !topdown
+            push!(chnl, (root, dirs, files))
+        end
+        nothing
+    end
+    return Channel{Tuple{String,Vector{String},Vector{String}}}(chnl -> _walkdir(chnl, root))
+end
+
+
 """
     query(fs::FileSystem, code::XRootD.XrdCl!QueryCode!Code , arg::String, timeout::UInt16=0x0000)
 

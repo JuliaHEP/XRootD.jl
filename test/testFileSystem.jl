@@ -67,6 +67,53 @@ using XRootD.XrdCl
     @test isOK(st)
     @test length(entries) > 0
 
+    # WalkDir
+    mkpath("/tmp/walkdir")
+    write("/tmp/walkdir/testfile1", "Hello, world!")
+    write("/tmp/walkdir/testfile2", "Hello, world!")
+    mkpath("/tmp/walkdir/someotherdir")
+    write("/tmp/walkdir/someotherdir/testfile3", "Hello, world!")
+    write("/tmp/walkdir/someotherdir/testfile4", "Hello, world!")
+    # topdown == true
+    iteration = 1
+    for (root, dirs, files) in walkdir(fs, "/tmp/walkdir")
+        if iteration == 1
+            @test root == "/tmp/walkdir"
+            @test length(dirs) == 1
+            @test length(files) == 2
+            @test dirs[1] == "someotherdir"
+            @test files[1] == "testfile1"
+            @test files[2] == "testfile2"
+            iteration += 1
+        else # iteration == 2
+            @test root == "/tmp/walkdir/someotherdir"
+            @test length(dirs) == 0
+            @test length(files) == 2
+            @test files[1] == "testfile3"
+            @test files[2] == "testfile4"
+        end
+    end
+    # topdown == false
+    iteration = 1
+    for (root, dirs, files) in walkdir(fs, "/tmp/walkdir"; topdown=false)
+        if iteration == 1
+            @test root == "/tmp/walkdir/someotherdir"
+            @test length(dirs) == 0
+            @test length(files) == 2
+            @test files[1] == "testfile3"
+            @test files[2] == "testfile4"
+            iteration += 1
+        else # iteration == 2
+            @test root == "/tmp/walkdir"
+            @test length(dirs) == 1
+            @test length(files) == 2
+            @test dirs[1] == "someotherdir"
+            @test files[1] == "testfile1"
+            @test files[2] == "testfile2"
+        end
+    end
+    @test_throws ErrorException walkdir(fs, "/tmp/doesnotexist") |> take!
+
     # Query
     st, response = query(fs, QueryCode.Stats, "/tmp")
     @test isOK(st)

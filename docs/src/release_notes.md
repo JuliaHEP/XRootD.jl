@@ -1,6 +1,9 @@
 
 # Release Notes
 
+## 0.2.2 (11-12-2024)
+- Added function walkdir to walk on a directory tree
+
 ## 0.2.1 (4-11-2024)
 - Added some protection to avoid pre-compilation errors in case the XRootD binary artifacts do not exist (e.g. Windows platform)
 

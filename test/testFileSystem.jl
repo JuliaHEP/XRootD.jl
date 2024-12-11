@@ -77,6 +77,7 @@ using XRootD.XrdCl
     # topdown == true
     iteration = 1
     for (root, dirs, files) in walkdir(fs, "/tmp/walkdir")
+        sort!(files)
         if iteration == 1
             @test root == "/tmp/walkdir"
             @test length(dirs) == 1
@@ -96,6 +97,7 @@ using XRootD.XrdCl
     # topdown == false
     iteration = 1
     for (root, dirs, files) in walkdir(fs, "/tmp/walkdir"; topdown=false)
+        sort!(files)
         if iteration == 1
             @test root == "/tmp/walkdir/someotherdir"
             @test length(dirs) == 0

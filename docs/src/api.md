@@ -6,13 +6,11 @@ Documentation for `XRootD.jl` public interface.
 
 ## Index
 ```@index
-Pages   = ["api.md"]
-Modules = [XRootD, XRootD.XrdCl]
+Modules = [XRootD, XRootD.XrdCl, Base, Base.Filesystem]
 Order   = [:type]
 ```
 ```@index
-Pages   = ["api.md"]
-Modules = [XRootD, XRootD.XrdCl, Base]
+Modules = [XRootD, XRootD.XrdCl, Base, Base.Filesystem]
 Order   = [:function]
 ```
 

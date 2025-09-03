@@ -1,6 +1,11 @@
 
 # Release Notes
 
+## 0.2.3 (03-09-2025)
+- Upgraded to CxxWrap 0.17 to support Julia 1.12. It fixes [#1](https://github.com/JuliaHEP/XRootD.jl/issues/1)
+- Removed from exports `url`, `length`, `Set` to avoid clashes with `Base`
+- Invoke `wrapit` to generate wrappers in the script instead of CMake   
+
 ## 0.2.2 (11-12-2024)
 - Added function walkdir to walk on a directory tree
 

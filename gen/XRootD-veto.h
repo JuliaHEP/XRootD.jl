@@ -43,4 +43,5 @@ XrdCl::PrepareFlags::Flags XrdCl::operator~(const XrdCl::PrepareFlags::Flags)
 void XrdCl::URL::URL(const char *)
 
 XrdCl::XRootDStatus XrdCl::PropertyList::Get(const std::string &)
+std::string XrdCl::PropertyList::Get(const std::string &)
 

@@ -10,6 +10,7 @@ module XRootD
         gendir = normpath(joinpath(@__DIR__, "../gen"))
         if isdir(joinpath(gendir, "build/lib"))
             include(joinpath(gendir, "jl/src/XRootD-export.jl"))
+            println("Using local XRootD wrapper code from: $gendir")
             @wrapmodule(()->joinpath(gendir, "build/lib", "libXRootDWrap.$(Libdl.dlext)"))
         else
             using XRootD_cxxwrap_jll

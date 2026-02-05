@@ -2,6 +2,7 @@ module XRootD
     using CxxWrap
     using Libdl
     using XRootD_jll
+    import Base: Set
 
     is_available() = XRootD_jll.is_available()
 
@@ -14,8 +15,12 @@ module XRootD
             @wrapmodule(()->joinpath(gendir, "build/lib", "libXRootDWrap.$(Libdl.dlext)"))
         else
             using XRootD_cxxwrap_jll
-            include(XRootD_cxxwrap_jll.XRootD_exports)
-            @wrapmodule(()->XRootD_cxxwrap_jll.libXRootDWrap)
+            if XRootD_cxxwrap_jll.is_available()
+                include(XRootD_cxxwrap_jll.XRootD_exports)
+                @wrapmodule(()->XRootD_cxxwrap_jll.libXRootDWrap)
+            else
+                error("XRootD binaries not available for $(Sys.KERNEL) $(Sys.ARCH) and Julia version $(VERSION).")
+            end
         end
 
         function __init__()

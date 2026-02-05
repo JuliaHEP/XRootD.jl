@@ -1,6 +1,10 @@
 
 # Release Notes
 
+## 0.2.4 (05-02-2026)
+- Fix for #2
+- Fix for #3
+ 
 ## 0.2.3 (03-09-2025)
 - Upgraded to CxxWrap 0.17 to support Julia 1.12. It fixes [#1](https://github.com/JuliaHEP/XRootD.jl/issues/1)
 - Removed from exports `url`, `length`, `Set` to avoid clashes with `Base`
